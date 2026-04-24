@@ -41,11 +41,11 @@ def verify_api_key(api_key: str = Security(api_key_header)):
 # ──────────────────────────────────────────────
 
 IDEAL_RANGES = {
-    "rarely": {"carbs": (45, 50), "fats": (25, 35), "protein": (15, 20), "fibre": (20, 25), "water_l": (2.0, 2.5)},
-    "lt_1_hr": {"carbs": (45, 55), "fats": (20, 30), "protein": (15, 25), "fibre": (25, 30), "water_l": (2.0, 2.5)},
-    "1_3_hr": {"carbs": (50, 55), "fats": (20, 30), "protein": (20, 30), "fibre": (25, 35), "water_l": (2.5, 3.0)},
-    "4_8_hr": {"carbs": (50, 60), "fats": (20, 30), "protein": (25, 30), "fibre": (30, 40), "water_l": (3.0, 3.5)},
-    "gt_8_hr": {"carbs": (55, 65), "fats": (20, 30), "protein": (25, 35), "fibre": (30, 45), "water_l": (3.5, 4.5)},
+    "0": {"carbs": (45, 50), "fats": (25, 35), "protein": (15, 20), "fibre": (20, 25), "water_l": (2.0, 2.5)},
+    "1": {"carbs": (45, 55), "fats": (20, 30), "protein": (15, 25), "fibre": (25, 30), "water_l": (2.0, 2.5)},
+    "2": {"carbs": (50, 55), "fats": (20, 30), "protein": (20, 30), "fibre": (25, 35), "water_l": (2.5, 3.0)},
+    "3": {"carbs": (50, 60), "fats": (20, 30), "protein": (25, 30), "fibre": (30, 40), "water_l": (3.0, 3.5)},
+    "4": {"carbs": (55, 65), "fats": (20, 30), "protein": (25, 35), "fibre": (30, 45), "water_l": (3.5, 4.5)},
 }
 
 # ──────────────────────────────────────────────
@@ -53,39 +53,39 @@ IDEAL_RANGES = {
 # Converts string keys from Questionnaire to original logic integers
 # ──────────────────────────────────────────────
 
-MAP_ACTIVITY = {"rarely": 0, "lt_1_hr": 1, "1_3_hr": 2, "4_8_hr": 3, "gt_8_hr": 4}
-MAP_INTENSITY = {"low": 0, "moderate": 1, "high": 2}
-MAP_BREAKFAST = {"none": 0, "lt_5": 1, "gt_5": 2}
-MAP_DIET = {"veg": 0, "non_veg": 1, "eggetarian": 2, "pescatarian": 3, "flexitarian": 4, "jain": 5}
-MAP_FREQUENCY_5 = {"rare": 0, "monthly": 1, "weekly_1": 2, "weekly_2_3": 3, "gt_4_week": 4}
-MAP_FRUIT_VEG = {"rare": 0, "monthly": 1, "weekly_1": 2, "weekly_2_3": 3, "daily_1_2": 4}
-MAP_COFFEE = {"none": 0, "0_1_day": 1, "1_2_day": 2, "gt_2_day": 2, "weekly": 1}
-MAP_WATER = {"lt_2": 0, "2": 1, "4": 2, "6": 3, "8": 4, "gt_8": 5}
-MAP_SMOKING = {"none": 0, "quit": 1, "1_3_week": 2, "5_7_week": 3, "gt_7_week": 4}
-MAP_ALCOHOL = {"none": 0, "quit": 1, "3_per_week": 2, "gt_3_week": 3}
-MAP_SICK = {"rare": 0, "1_2": 1, "2_3": 2, "4_5": 3, "gt_6": 4}
+MAP_ACTIVITY = {"0": 0, "1": 1, "2": 2, "3": 3, "4": 4}
+MAP_INTENSITY = {"0": 0, "1": 1, "2": 2}
+MAP_BREAKFAST = {"0": 0, "1": 1, "2": 2}
+MAP_DIET = {"0": 0, "1": 1, "2": 2, "3": 3, "4": 4, "5": 5}
+MAP_FREQUENCY_5 = {"5": 0, "4": 1, "3": 2, "2": 3, "1": 4}
+MAP_FRUIT_VEG = {"5": 0, "4": 1, "3": 2, "2": 3, "0": 4}
+MAP_COFFEE = {"0": 0, "1": 1, "2": 2}
+MAP_WATER = {"0": 0, "1": 1, "2": 2, "3": 3, "4": 4, "5": 5}
+MAP_SMOKING = {"0": 0, "1": 1, "2": 2, "3": 3, "4": 4}
+MAP_ALCOHOL = {"0": 0, "1": 1, "2": 2, "3": 3}
+MAP_SICK = {"0": 0, "1": 1, "2": 2, "3": 3, "4": 4}
 
 # ──────────────────────────────────────────────
 # MODELS
 # ──────────────────────────────────────────────
 
 class NutritionRequest(BaseModel):
-    exercise_frequency_week: str = Field(..., description="Values: rarely, lt_1_hr, 1_3_hr, 4_8_hr, gt_8_hr")
-    exercise_level: str = Field(..., description="Values: low, moderate, high")
-    healthy_breakfast_frequency: str = Field(..., description="Values: none, lt_5, gt_5")
-    diet_preference: str = Field(..., description="Values: veg, non_veg, eggetarian, pescatarian, flexitarian, jain")
-    food_groups: List[str] = Field(..., description="List of strings like ['pulses', 'fruits']")
-    fresh_fruit_frequency: str = Field(..., description="Values: rare, monthly, weekly_1, weekly_2_3, daily_1_2")
-    fresh_vegetable_frequency: str = Field(..., description="Values: rare, monthly, weekly_1, weekly_2_3, daily_1_2")
-    baked_goods_frequency: str = Field(..., description="Values: rare, monthly, weekly_1, weekly_2_3, gt_4_week")
-    red_meat_frequency: str = Field(..., description="Values: rare, monthly, weekly_1, weekly_2_3, gt_4_week")
-    butter_dish_frequency: str = Field(..., description="Values: rare, monthly, weekly_1, weekly_2_3, gt_4_week")
-    dessert_frequency: str = Field(..., description="Values: rare, monthly, weekly_1, weekly_2_3, gt_4_week")
-    caffeine_frequency: str = Field(..., description="Values: none, 0_1_day, 1_2_day, gt_2_day, weekly")
-    water_intake_frequency: str = Field(..., description="Values: lt_2, 2, 4, 6, 8, gt_8")
-    tobacco_frequency: str = Field(..., description="Values: none, quit, 1_3_week, 5_7_week, gt_7_week")
-    alcohol_frequency: str = Field(..., description="Values: none, quit, 3_per_week, gt_3_week")
-    sickness_frequency: str = Field(..., description="Values: rare, 1_2, 2_3, 4_5, gt_6")
+    exercise_frequency_week: str = Field(..., description="0=Rarely, 1=<1hr, 2=1-3hr, 3=4-8hr, 4=>8hr")
+    exercise_level: str = Field(..., description="0=Low, 1=Moderate, 2=High")
+    healthy_breakfast_frequency: str = Field(..., description="0=No breakfast, 1=<5 times, 2=>5 times")
+    diet_preference: str = Field(..., description="0=Veg, 1=Non-Veg, 2=Eggetarian, 3=Pescatarian, 4=Flexitarian, 5=Jain")
+    food_groups: List[str] = Field(..., description="List of option values: 0=Whole grains, 1=Pulses, 2=Milk/Curd, 3=Vegetables, 4=Fruits, 5=Nuts/Seeds, 6=Eggs, 7=Chicken/Fish, 9=Cruciferous")
+    fresh_fruit_frequency: str = Field(..., description="0=1-2/day, 2=2-3/week, 3=Once/week, 4=1-2/month, 5=Rarely")
+    fresh_vegetable_frequency: str = Field(..., description="0=1-2/day, 2=2-3/week, 3=Once/week, 4=1-2/month, 5=Rarely")
+    baked_goods_frequency: str = Field(..., description="1=4+/week, 2=2-3/week, 3=Once/week, 4=1-2/month, 5=Rarely")
+    red_meat_frequency: str = Field(..., description="1=4+/week, 2=2-3/week, 3=Once/week, 4=1-2/month, 5=Rarely")
+    butter_dish_frequency: str = Field(..., description="1=4+/week, 2=2-3/week, 3=Once/week, 4=1-2/month, 5=Rarely")
+    dessert_frequency: str = Field(..., description="1=4+/week, 2=2-3/week, 3=Once/week, 4=1-2/month, 5=Rarely")
+    caffeine_frequency: str = Field(..., description="0=None, 1=1-2 cups/day, 2=>2 cups/day")
+    water_intake_frequency: str = Field(..., description="0=<2 glasses, 1=2, 2=4, 3=6, 4=8, 5=>8 glasses")
+    tobacco_frequency: str = Field(..., description="0=None, 1=Quit, 2=1-3/week, 3=5-7/week, 4=>7/week")
+    alcohol_frequency: str = Field(..., description="0=None, 1=Quit, 2=≤3/week, 3=>3/week")
+    sickness_frequency: str = Field(..., description="0=Rarely, 1=1-2, 2=2-3, 3=4-5, 4=6+ times/year")
 
 class RangeValue(BaseModel):
     estimated_low: float
